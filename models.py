@@ -13,7 +13,7 @@ class User(Base):
     is_active = Column(Boolean, default=False)
     orders = relationship('Order',back_populates='user')
 
-    def __str__(self):
+    def __repr__(self):
         return f"<User {self.username}"
 
 class Order(Base):
@@ -36,9 +36,9 @@ class Order(Base):
     order_status = Column(ChoiceType(choices=ORDER_STATUSES),default="PENDING")
     pizza_size = Column(ChoiceType(choices=PIZZA_SIZES),default="SMALL")
     user_id = Column(Integer,ForeignKey('user.id'))
-    users = relationship('User',back_populates='orders')
+    user = relationship('User',back_populates='orders')
 
-    def __str__(self):
+    def __repr__(self):
         return f"Order s{self.id}"
 
 
