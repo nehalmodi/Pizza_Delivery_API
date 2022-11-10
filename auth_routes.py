@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, Depends
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 from database import engine, Session
 from schema import SignUpModel,LoginModel
 from models import User
@@ -10,7 +11,7 @@ from fastapi.encoders import jsonable_encoder
 
 
 
-
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 auth_router = APIRouter(
     prefix='/auth',
     tags = ['auth_tag']
@@ -69,8 +70,14 @@ async def login(user:LoginModel,Authorize: AuthJWT=Depends()):
     db_user = session.query(User).filter(User.username==user.username).first()
 
     if db_user and check_password_hash(db_user.password, user.password):
-        access_token = Authorize.create_access_token(subject=db_user.username)
-        refresh_token = Authorize.create_refresh_token(subject=db_user.username)
+        access_token = Authorize.create_access_token(
+            subject=db_user.username,
+            expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        )
+        refresh_token = Authorize.create_refresh_token(
+            subject=db_user.username,
+            expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        )
 
         response =  {
             "access" : access_token,
