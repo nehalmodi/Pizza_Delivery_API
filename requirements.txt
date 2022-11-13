@@ -6,3 +6,4 @@ sqlalchemy
 sqlalchemy_utils
 werkzeug
 uvicorn
+psycopg2
